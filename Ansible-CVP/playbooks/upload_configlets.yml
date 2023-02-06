@@ -8,5 +8,5 @@
   tasks:
     - name: Upload configlets
       arista.cvp.cv_configlet_v3:
-        configlets: "{{ CVP_CONFIGLETS_TEST }}"
+        configlets: "{{ cvp_configlets_test }}"
         state: present
