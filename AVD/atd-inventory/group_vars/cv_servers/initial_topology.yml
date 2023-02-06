@@ -1,0 +1,61 @@
+---
+CVP_DEVICES_INIT:
+  - fqdn: spine1
+    parentContainerName: STAGING
+    configlets:
+      - 'spine1-base'
+      - 'ATD-INFRA'
+  - fqdn: spine2
+    parentContainerName: STAGING
+    configlets:
+      - 'spine2-base'
+      - 'ATD-INFRA'
+  - fqdn: spine3
+    parentContainerName: STAGING
+    configlets:
+      - 'spine3-base'
+      - 'ATD-INFRA'
+  - fqdn: leaf1
+    parentContainerName: STAGING
+    configlets:
+      - 'leaf1-base'
+      - 'ATD-INFRA'
+  - fqdn: leaf2
+    parentContainerName: STAGING
+    configlets:
+      - 'leaf2-base'
+      - 'ATD-INFRA'
+  - fqdn: leaf3
+    parentContainerName: STAGING
+    configlets:
+      - 'leaf3-base'
+      - 'ATD-INFRA'
+  - fqdn: leaf4
+    parentContainerName: STAGING
+    configlets:
+      - 'leaf4-base'
+      - 'ATD-INFRA'
+  - fqdn: borderleaf1
+    parentContainerName: STAGING
+    configlets:
+      - 'borderleaf1-base'
+      - 'ATD-INFRA'
+  - fqdn: borderleaf2
+    parentContainerName: STAGING
+    configlets:
+      - 'borderleaf2-base'
+      - 'ATD-INFRA'
+
+CVP_CONTAINERS_INIT:
+  STAGING:
+    parentContainerName: Tenant
+  Hosts:
+    parentContainerName: Tenant
+  CVX:
+    parentContainerName: Tenant
+
+CVP_CONTAINERS_DELETE:
+  Leaf:
+    parentContainerName: DC1
+  Spine:
+    parentContainerName: DC1
