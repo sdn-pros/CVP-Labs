@@ -2,8 +2,8 @@
 - name: Playbook for uploading configlets to CloudVision
   hosts: cvp1
 
-  # vars_files:
-  #   - ../vars/CVP-eBGP.yml
+  vars_files:
+    - ../vars/CVP-eBGP.yml
 
   tasks:
     - name: Upload configlets
