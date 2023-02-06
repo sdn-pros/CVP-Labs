@@ -3,7 +3,7 @@
   hosts: cvp1
 
   vars_files:
-    - ../vars/CVP-e.yml
+    - ../vars/CVP_model.yml
 
   tasks:
     - name: Upload configlets
