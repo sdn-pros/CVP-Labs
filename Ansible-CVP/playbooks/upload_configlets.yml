@@ -3,7 +3,7 @@
   hosts: cvp1
 
   vars_files:
-    - ../vars/CVP-eBGP.yml
+    - ../vars/CVP-e.yml
 
   tasks:
     - name: Upload configlets

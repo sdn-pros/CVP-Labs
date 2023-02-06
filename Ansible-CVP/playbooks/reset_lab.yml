@@ -1,0 +1,18 @@
+---
+- name: Reset lab environment
+  hosts: cvp1
+
+  vars_files:
+    - ../vars/CVP_base.yml
+
+  tasks:
+
+    - name: "Build default container topology"
+      arista.cvp.cv_container_v3:
+        topology: "{{ cvp_containers_default }}"
+
+    - name: "Apply configlets for default config"
+      arista.cvp.cv_device_v3:
+        devices: "{{ cvp_devices_default }}"
+        state: present
+        apply_mode: strict
