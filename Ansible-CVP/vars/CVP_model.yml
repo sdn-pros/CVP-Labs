@@ -1,0 +1,5 @@
+path: "{{lookup('env','PWD')}}"
+
+CVP_CONFIGLETS_TEST:
+ Alias: “alias ship show ip interface brief”
+ MLAG-Left: "{{ lookup('file','{{path}}/configlets/MLAG-Left.cfg') }}"
