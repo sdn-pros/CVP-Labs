@@ -22,7 +22,7 @@
         name: eos_cli_config_gen
 
 - name: Configuration deployment with CVP
-  hosts: cv_servers
+  hosts: cvp1
   connection: local
   gather_facts: false
   collections:

@@ -5,29 +5,26 @@
   - [Management API HTTP](#management-api-http)
 - [Authentication](#authentication)
 - [Monitoring](#monitoring)
-- [MLAG](#mlag)
-  - [MLAG Summary](#mlag-summary)
-  - [MLAG Device Configuration](#mlag-device-configuration)
 - [Spanning Tree](#spanning-tree)
   - [Spanning Tree Summary](#spanning-tree-summary)
   - [Spanning Tree Device Configuration](#spanning-tree-device-configuration)
 - [Internal VLAN Allocation Policy](#internal-vlan-allocation-policy)
   - [Internal VLAN Allocation Policy Summary](#internal-vlan-allocation-policy-summary)
   - [Internal VLAN Allocation Policy Configuration](#internal-vlan-allocation-policy-configuration)
-- [VLANs](#vlans)
-  - [VLANs Summary](#vlans-summary)
-  - [VLANs Device Configuration](#vlans-device-configuration)
 - [Interfaces](#interfaces)
   - [Ethernet Interfaces](#ethernet-interfaces)
-  - [Port-Channel Interfaces](#port-channel-interfaces)
-  - [VLAN Interfaces](#vlan-interfaces)
+  - [Loopback Interfaces](#loopback-interfaces)
 - [Routing](#routing)
   - [Service Routing Protocols Model](#service-routing-protocols-model)
   - [IP Routing](#ip-routing)
   - [IPv6 Routing](#ipv6-routing)
+  - [Router BGP](#router-bgp)
+- [BFD](#bfd)
+  - [Router BFD](#router-bfd)
 - [Multicast](#multicast)
-  - [IP IGMP Snooping](#ip-igmp-snooping)
 - [Filters](#filters)
+  - [Prefix-lists](#prefix-lists)
+  - [Route-maps](#route-maps)
 - [ACL](#acl)
 - [VRF Instances](#vrf-instances)
   - [VRF Instances Summary](#vrf-instances-summary)
@@ -66,52 +63,17 @@ management api http-commands
 
 # Monitoring
 
-# MLAG
-
-## MLAG Summary
-
-| Domain-id | Local-interface | Peer-address | Peer-link |
-| --------- | --------------- | ------------ | --------- |
-| SPINES | Vlan4094 | 192.168.99.0 | Port-Channel1 |
-
-Dual primary detection is disabled.
-
-## MLAG Device Configuration
-
-```eos
-!
-mlag configuration
-   domain-id SPINES
-   local-interface Vlan4094
-   peer-address 192.168.99.0
-   peer-link Port-Channel1
-   reload-delay mlag 300
-   reload-delay non-mlag 330
-```
-
 # Spanning Tree
 
 ## Spanning Tree Summary
 
-STP mode: **mstp**
-
-### MSTP Instance and Priority
-
-| Instance(s) | Priority |
-| -------- | -------- |
-| 0 | 4096 |
-
-### Global Spanning-Tree Settings
-
-- Spanning Tree disabled for VLANs: **4094**
+STP mode: **none**
 
 ## Spanning Tree Device Configuration
 
 ```eos
 !
-spanning-tree mode mstp
-no spanning-tree vlan-id 4094
-spanning-tree mst 0 priority 4096
+spanning-tree mode none
 ```
 
 # Internal VLAN Allocation Policy
@@ -129,23 +91,6 @@ spanning-tree mst 0 priority 4096
 vlan internal order ascending range 1006 1199
 ```
 
-# VLANs
-
-## VLANs Summary
-
-| VLAN ID | Name | Trunk Groups |
-| ------- | ---- | ------------ |
-| 4094 | MLAG_PEER | MLAG |
-
-## VLANs Device Configuration
-
-```eos
-!
-vlan 4094
-   name MLAG_PEER
-   trunk group MLAG
-```
-
 # Interfaces
 
 ## Ethernet Interfaces
@@ -156,109 +101,76 @@ vlan 4094
 
 | Interface | Description | Mode | VLANs | Native VLAN | Trunk Group | Channel-Group |
 | --------- | ----------- | ---- | ----- | ----------- | ----------- | ------------- |
-| Ethernet1 | MLAG_PEER_spine1_Ethernet1 | *trunk | *2-4094 | *- | *['MLAG'] | 1 |
-| Ethernet2 | LEAF1_Ethernet4 | *trunk | *none | *- | *- | 2 |
-| Ethernet3 | LEAF2_Ethernet4 | *trunk | *none | *- | *- | 2 |
-| Ethernet4 | LEAF3_Ethernet4 | *trunk | *none | *- | *- | 4 |
-| Ethernet5 | LEAF4_Ethernet4 | *trunk | *none | *- | *- | 4 |
 
 *Inherited from Port-Channel Interface
+
+#### IPv4
+
+| Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
+| --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
+| Ethernet2 | P2P_LINK_TO_LEAF1_Ethernet4 | routed | - | 192.168.103.2/31 | default | 1500 | False | - | - |
+| Ethernet3 | P2P_LINK_TO_LEAF2_Ethernet4 | routed | - | 192.168.103.6/31 | default | 1500 | False | - | - |
+| Ethernet4 | P2P_LINK_TO_LEAF3_Ethernet4 | routed | - | 192.168.103.10/31 | default | 1500 | False | - | - |
+| Ethernet5 | P2P_LINK_TO_LEAF4_Ethernet4 | routed | - | 192.168.103.14/31 | default | 1500 | False | - | - |
 
 ### Ethernet Interfaces Device Configuration
 
 ```eos
 !
-interface Ethernet1
-   description MLAG_PEER_spine1_Ethernet1
-   no shutdown
-   channel-group 1 mode active
-!
 interface Ethernet2
-   description LEAF1_Ethernet4
+   description P2P_LINK_TO_LEAF1_Ethernet4
    no shutdown
-   channel-group 2 mode active
+   mtu 1500
+   no switchport
+   ip address 192.168.103.2/31
 !
 interface Ethernet3
-   description LEAF2_Ethernet4
+   description P2P_LINK_TO_LEAF2_Ethernet4
    no shutdown
-   channel-group 2 mode active
+   mtu 1500
+   no switchport
+   ip address 192.168.103.6/31
 !
 interface Ethernet4
-   description LEAF3_Ethernet4
+   description P2P_LINK_TO_LEAF3_Ethernet4
    no shutdown
-   channel-group 4 mode active
+   mtu 1500
+   no switchport
+   ip address 192.168.103.10/31
 !
 interface Ethernet5
-   description LEAF4_Ethernet4
+   description P2P_LINK_TO_LEAF4_Ethernet4
    no shutdown
-   channel-group 4 mode active
+   mtu 1500
+   no switchport
+   ip address 192.168.103.14/31
 ```
 
-## Port-Channel Interfaces
+## Loopback Interfaces
 
-### Port-Channel Interfaces Summary
-
-#### L2
-
-| Interface | Description | Type | Mode | VLANs | Native VLAN | Trunk Group | LACP Fallback Timeout | LACP Fallback Mode | MLAG ID | EVPN ESI |
-| --------- | ----------- | ---- | ---- | ----- | ----------- | ------------| --------------------- | ------------------ | ------- | -------- |
-| Port-Channel1 | MLAG_PEER_spine1_Po1 | switched | trunk | 2-4094 | - | ['MLAG'] | - | - | - | - |
-| Port-Channel2 | RACK1_Po3 | switched | trunk | none | - | - | - | - | 2 | - |
-| Port-Channel4 | RACK2_Po3 | switched | trunk | none | - | - | - | - | 4 | - |
-
-### Port-Channel Interfaces Device Configuration
-
-```eos
-!
-interface Port-Channel1
-   description MLAG_PEER_spine1_Po1
-   no shutdown
-   switchport
-   switchport trunk allowed vlan 2-4094
-   switchport mode trunk
-   switchport trunk group MLAG
-!
-interface Port-Channel2
-   description RACK1_Po3
-   no shutdown
-   switchport
-   switchport trunk allowed vlan none
-   switchport mode trunk
-   mlag 2
-!
-interface Port-Channel4
-   description RACK2_Po3
-   no shutdown
-   switchport
-   switchport trunk allowed vlan none
-   switchport mode trunk
-   mlag 4
-```
-
-## VLAN Interfaces
-
-### VLAN Interfaces Summary
-
-| Interface | Description | VRF |  MTU | Shutdown |
-| --------- | ----------- | --- | ---- | -------- |
-| Vlan4094 | MLAG_PEER | default | 1500 | False |
+### Loopback Interfaces Summary
 
 #### IPv4
 
-| Interface | VRF | IP Address | IP Address Virtual | IP Router Virtual Address | VRRP | ACL In | ACL Out |
-| --------- | --- | ---------- | ------------------ | ------------------------- | ---- | ------ | ------- |
-| Vlan4094 |  default  |  192.168.99.1/31  |  -  |  -  |  -  |  -  |  -  |
+| Interface | Description | VRF | IP Address |
+| --------- | ----------- | --- | ---------- |
+| Loopback0 | EVPN_Overlay_Peering | default | 192.168.101.12/32 |
 
-### VLAN Interfaces Device Configuration
+#### IPv6
+
+| Interface | Description | VRF | IPv6 Address |
+| --------- | ----------- | --- | ------------ |
+| Loopback0 | EVPN_Overlay_Peering | default | - |
+
+
+### Loopback Interfaces Device Configuration
 
 ```eos
 !
-interface Vlan4094
-   description MLAG_PEER
+interface Loopback0
+   description EVPN_Overlay_Peering
    no shutdown
-   mtu 1500
-   no autostate
-   ip address 192.168.99.1/31
+   ip address 192.168.101.12/32
 ```
 
 # Routing
@@ -296,22 +208,173 @@ no ip routing vrf MGMT
 | default | False |
 | MGMT | false |
 
-# Multicast
+## Router BGP
 
-## IP IGMP Snooping
+### Router BGP Summary
 
-### IP IGMP Snooping Summary
+| BGP AS | Router ID |
+| ------ | --------- |
+| 65001|  192.168.101.12 |
 
-| IGMP Snooping | Fast Leave | Interface Restart Query | Proxy | Restart Query Interval | Robustness Variable |
-| ------------- | ---------- | ----------------------- | ----- | ---------------------- | ------------------- |
-| Enabled | - | - | - | - | - |
+| BGP Tuning |
+| ---------- |
+| no bgp default ipv4-unicast |
+| distance bgp 20 200 200 |
+| maximum-paths 4 ecmp 4 |
 
-### IP IGMP Snooping Device Configuration
+### Router BGP Peer Groups
+
+#### EVPN-OVERLAY-PEERS
+
+| Settings | Value |
+| -------- | ----- |
+| Address Family | evpn |
+| Next-hop unchanged | True |
+| Source | Loopback0 |
+| BFD | True |
+| Ebgp multihop | 3 |
+| Send community | all |
+| Maximum routes | 0 (no limit) |
+
+#### IPv4-UNDERLAY-PEERS
+
+| Settings | Value |
+| -------- | ----- |
+| Address Family | ipv4 |
+| Send community | all |
+| Maximum routes | 12000 |
+
+### BGP Neighbors
+
+| Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain |
+| -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- |
+| 192.168.101.1 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
+| 192.168.101.2 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
+| 192.168.101.3 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
+| 192.168.101.4 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
+| 192.168.103.3 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
+| 192.168.103.7 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
+| 192.168.103.11 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
+| 192.168.103.15 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
+
+### Router BGP EVPN Address Family
+
+#### EVPN Peer Groups
+
+| Peer Group | Activate |
+| ---------- | -------- |
+| EVPN-OVERLAY-PEERS | True |
+
+### Router BGP Device Configuration
 
 ```eos
+!
+router bgp 65001
+   router-id 192.168.101.12
+   no bgp default ipv4-unicast
+   distance bgp 20 200 200
+   maximum-paths 4 ecmp 4
+   neighbor EVPN-OVERLAY-PEERS peer group
+   neighbor EVPN-OVERLAY-PEERS next-hop-unchanged
+   neighbor EVPN-OVERLAY-PEERS update-source Loopback0
+   neighbor EVPN-OVERLAY-PEERS bfd
+   neighbor EVPN-OVERLAY-PEERS ebgp-multihop 3
+   neighbor EVPN-OVERLAY-PEERS send-community
+   neighbor EVPN-OVERLAY-PEERS maximum-routes 0
+   neighbor IPv4-UNDERLAY-PEERS peer group
+   neighbor IPv4-UNDERLAY-PEERS send-community
+   neighbor IPv4-UNDERLAY-PEERS maximum-routes 12000
+   neighbor 192.168.101.1 peer group EVPN-OVERLAY-PEERS
+   neighbor 192.168.101.1 remote-as 65100
+   neighbor 192.168.101.1 description leaf1
+   neighbor 192.168.101.2 peer group EVPN-OVERLAY-PEERS
+   neighbor 192.168.101.2 remote-as 65100
+   neighbor 192.168.101.2 description leaf2
+   neighbor 192.168.101.3 peer group EVPN-OVERLAY-PEERS
+   neighbor 192.168.101.3 remote-as 65102
+   neighbor 192.168.101.3 description leaf3
+   neighbor 192.168.101.4 peer group EVPN-OVERLAY-PEERS
+   neighbor 192.168.101.4 remote-as 65102
+   neighbor 192.168.101.4 description leaf4
+   neighbor 192.168.103.3 peer group IPv4-UNDERLAY-PEERS
+   neighbor 192.168.103.3 remote-as 65100
+   neighbor 192.168.103.3 description leaf1_Ethernet4
+   neighbor 192.168.103.7 peer group IPv4-UNDERLAY-PEERS
+   neighbor 192.168.103.7 remote-as 65100
+   neighbor 192.168.103.7 description leaf2_Ethernet4
+   neighbor 192.168.103.11 peer group IPv4-UNDERLAY-PEERS
+   neighbor 192.168.103.11 remote-as 65102
+   neighbor 192.168.103.11 description leaf3_Ethernet4
+   neighbor 192.168.103.15 peer group IPv4-UNDERLAY-PEERS
+   neighbor 192.168.103.15 remote-as 65102
+   neighbor 192.168.103.15 description leaf4_Ethernet4
+   redistribute connected route-map RM-CONN-2-BGP
+   !
+   address-family evpn
+      neighbor EVPN-OVERLAY-PEERS activate
+   !
+   address-family ipv4
+      no neighbor EVPN-OVERLAY-PEERS activate
+      neighbor IPv4-UNDERLAY-PEERS activate
 ```
 
+# BFD
+
+## Router BFD
+
+### Router BFD Multihop Summary
+
+| Interval | Minimum RX | Multiplier |
+| -------- | ---------- | ---------- |
+| 1200 | 1200 | 3 |
+
+### Router BFD Device Configuration
+
+```eos
+!
+router bfd
+   multihop interval 1200 min-rx 1200 multiplier 3
+```
+
+# Multicast
+
 # Filters
+
+## Prefix-lists
+
+### Prefix-lists Summary
+
+#### PL-LOOPBACKS-EVPN-OVERLAY
+
+| Sequence | Action |
+| -------- | ------ |
+| 10 | permit 192.168.101.0/24 eq 32 |
+
+### Prefix-lists Device Configuration
+
+```eos
+!
+ip prefix-list PL-LOOPBACKS-EVPN-OVERLAY
+   seq 10 permit 192.168.101.0/24 eq 32
+```
+
+## Route-maps
+
+### Route-maps Summary
+
+#### RM-CONN-2-BGP
+
+| Sequence | Type | Match | Set | Sub-Route-Map | Continue |
+| -------- | ---- | ----- | --- | ------------- | -------- |
+| 10 | permit | ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY | - | - | - |
+
+### Route-maps Device Configuration
+
+```eos
+!
+route-map RM-CONN-2-BGP permit 10
+   match ip address prefix-list PL-LOOPBACKS-EVPN-OVERLAY
+```
 
 # ACL
 
