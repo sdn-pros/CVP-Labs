@@ -1,0 +1,7 @@
+---
+root_dir: '{{playbook_dir}}'
+
+snmp_settings:
+  location: true
+
+avd_data_validation_mode: "error"

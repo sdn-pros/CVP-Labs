@@ -11,7 +11,7 @@ all:
     ATD_FABRIC:
       vars:
         ansible_user: arista
-        ansible_ssh_pass: aristae5uo
+        ansible_ssh_pass: aristax4x7
       children:
           ATD_SPINES:
             vars:

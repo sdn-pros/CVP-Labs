@@ -4,8 +4,11 @@
 
 fabric_name: ATD_FABRIC
 
+# Various fabric settings
+
 # Enable vlan aware bundles
 vxlan_vlan_aware_bundles: true
+
 
 # Spine Switches
 spine:
@@ -80,3 +83,6 @@ bfd_multihop:
   interval: 1200
   min_rx: 1200
   multiplier: 3
+
+mgmt_interface: Management1
+mgmt_interface_vrf: default

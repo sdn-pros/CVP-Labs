@@ -1,0 +1,7 @@
+---
+# tasks file for ztp-setup
+# If mode=online launch server configuration
+# If mode=offline generate dhcpd.conf to {{output_dir}}
+- name: Start creation/update process.
+  tags: [provision]
+  include_tasks: "./{{ mode }}.yml"

@@ -1,0 +1,153 @@
+static_routes:
+- vrf: MGMT
+  destination_address_prefix: 0.0.0.0/0
+  gateway: 192.168.200.1
+service_routing_protocols_model: multi-agent
+ip_routing: true
+vlan_internal_order:
+  allocation: ascending
+  range:
+    beginning: 1006
+    ending: 1199
+vrfs:
+  MGMT:
+    ip_routing: false
+management_interfaces:
+  Management1:
+    description: oob_management
+    shutdown: false
+    vrf: MGMT
+    ip_address: 192.168.200.109/24
+    gateway: 192.168.200.1
+    type: oob
+management_api_http:
+  enable_vrfs:
+    MGMT: {}
+  enable_https: true
+ethernet_interfaces:
+  Ethernet1:
+    peer: EVPN-MULTICAST-L3LEAF1A
+    peer_interface: Ethernet6
+    peer_type: l3leaf
+    description: EVPN-MULTICAST-L3LEAF1A_Ethernet6
+    shutdown: false
+    type: switched
+    channel_group:
+      id: 1
+      mode: active
+  Ethernet2:
+    peer: EVPN-MULTICAST-L3LEAF1B
+    peer_interface: Ethernet6
+    peer_type: l3leaf
+    description: EVPN-MULTICAST-L3LEAF1B_Ethernet6
+    shutdown: false
+    type: switched
+    channel_group:
+      id: 1
+      mode: active
+port_channel_interfaces:
+  Port-Channel1:
+    description: EVPN_MULTICAST_L3LEAF1_Po6
+    type: switched
+    shutdown: false
+    mode: trunk
+    vlans: 1-9,110-111,130-131,140-141,150,210-211,230-231,240-241,250,256-257,260,310-311,330-331,550,4092
+vlans:
+  310:
+    tenant: Tenant_A
+    name: MULTICAST_DISABLED_310
+  311:
+    tenant: Tenant_A
+    name: MULTICAST_DISABLED_311
+  110:
+    tenant: Tenant_A
+    name: MULTICAST_ENABLED_110
+  111:
+    tenant: Tenant_A
+    name: MULTICAST_ENABLED_111
+  210:
+    tenant: Tenant_A
+    name: MULTICAST_ENABLED_210
+  211:
+    tenant: Tenant_A
+    name: MULTICAST_DISABLED_211
+  256:
+    tenant: Tenant_A
+    name: MULTICAST_DISABLED_256
+  257:
+    tenant: Tenant_A
+    name: MULTICAST_ENABLED_257
+  4092:
+    tenant: Tenant_A
+    name: MULTICAST_ENABLED_4092
+  5:
+    tenant: Tenant_B
+    name: MULTICAST_DISABLED_5
+  6:
+    tenant: Tenant_B
+    name: MULTICAST_DISABLED_6
+  1:
+    tenant: Tenant_B
+    name: MULTICAST_ENABLED_1
+  2:
+    tenant: Tenant_B
+    name: MULTICAST_ENABLED_2
+  3:
+    tenant: Tenant_B
+    name: MULTICAST_ENABLED_3
+  4:
+    tenant: Tenant_B
+    name: MULTICAST_DISABLED_4
+  7:
+    tenant: Tenant_B
+    name: MULTICAST_DISABLED_7
+  8:
+    tenant: Tenant_B
+    name: MULTICAST_ENABLED_8
+  9:
+    tenant: Tenant_B
+    name: MULTICAST_ENABLED_9
+  330:
+    tenant: Tenant_C
+    name: L3_MULTICAST_DISABLED_330
+  331:
+    tenant: Tenant_C
+    name: L3_MULTICAST_DISABLED_331
+  130:
+    tenant: Tenant_C
+    name: L3_MULTICAST_ENABLED_130
+  131:
+    tenant: Tenant_C
+    name: L3_MULTICAST_ENABLED_131
+  230:
+    tenant: Tenant_C
+    name: L3_MULTICAST_ENABLED_230
+  231:
+    tenant: Tenant_C
+    name: L3_MULTICAST_DISABLED_231
+  240:
+    tenant: Tenant_D
+    name: L3_MULTICAST_DISABLED_240
+  241:
+    tenant: Tenant_D
+    name: L3_MULTICAST_DISABLED_241
+  140:
+    tenant: Tenant_D
+    name: L3_MULTICAST_ENABLED_140
+  141:
+    tenant: Tenant_D
+    name: L3_MULTICAST_DISABLED_141
+  550:
+    tenant: Tenant_E
+    name: L3_MULTICAST_ENABLED_550
+  260:
+    tenant: Tenant_E
+    name: L3_MULTICAST_ENABLED_260
+  250:
+    tenant: Tenant_E
+    name: L3_MULTICAST_ENABLED_250
+  150:
+    tenant: Tenant_E
+    name: L3_MULTICAST_ENABLED_150
+ip_igmp_snooping:
+  globally_enabled: true

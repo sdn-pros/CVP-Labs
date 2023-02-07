@@ -1,0 +1,8 @@
+{# eos - ip routing #}
+{% if ip_routing is arista.avd.defined(true) %}
+!
+ip routing
+{% elif ip_routing is arista.avd.defined(false) %}
+!
+no ip routing
+{% endif %}

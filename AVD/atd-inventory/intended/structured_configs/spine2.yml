@@ -14,9 +14,9 @@ router_bgp:
       type: evpn
       update_source: Loopback0
       bfd: true
-      ebgp_multihop: '3'
       send_community: all
       maximum_routes: 0
+      ebgp_multihop: 3
       next_hop_unchanged: true
   address_family_ipv4:
     peer_groups:
@@ -74,11 +74,19 @@ vlan_internal_order:
 spanning_tree:
   mode: none
 vrfs:
-  MGMT:
+  default:
     ip_routing: false
+management_interfaces:
+  Management1:
+    description: oob_management
+    shutdown: false
+    vrf: default
+    ip_address: 192.168.0.12/24
+    gateway: null
+    type: oob
 management_api_http:
   enable_vrfs:
-    MGMT: {}
+    default: {}
   enable_https: true
 ethernet_interfaces:
   Ethernet2:
@@ -86,36 +94,36 @@ ethernet_interfaces:
     peer_interface: Ethernet4
     peer_type: l3leaf
     description: P2P_LINK_TO_LEAF1_Ethernet4
+    shutdown: false
     mtu: 1500
     type: routed
-    shutdown: false
     ip_address: 192.168.103.2/31
   Ethernet3:
     peer: leaf2
     peer_interface: Ethernet4
     peer_type: l3leaf
     description: P2P_LINK_TO_LEAF2_Ethernet4
+    shutdown: false
     mtu: 1500
     type: routed
-    shutdown: false
     ip_address: 192.168.103.6/31
   Ethernet4:
     peer: leaf3
     peer_interface: Ethernet4
     peer_type: l3leaf
     description: P2P_LINK_TO_LEAF3_Ethernet4
+    shutdown: false
     mtu: 1500
     type: routed
-    shutdown: false
     ip_address: 192.168.103.10/31
   Ethernet5:
     peer: leaf4
     peer_interface: Ethernet4
     peer_type: l3leaf
     description: P2P_LINK_TO_LEAF4_Ethernet4
+    shutdown: false
     mtu: 1500
     type: routed
-    shutdown: false
     ip_address: 192.168.103.14/31
 loopback_interfaces:
   Loopback0:

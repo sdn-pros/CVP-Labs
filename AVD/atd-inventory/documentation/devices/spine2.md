@@ -2,6 +2,7 @@
 # Table of Contents
 
 - [Management](#management)
+  - [Management Interfaces](#management-interfaces)
   - [Management API HTTP](#management-api-http)
 - [Authentication](#authentication)
 - [Monitoring](#monitoring)
@@ -33,6 +34,32 @@
 
 # Management
 
+## Management Interfaces
+
+### Management Interfaces Summary
+
+#### IPv4
+
+| Management Interface | description | Type | VRF | IP Address | Gateway |
+| -------------------- | ----------- | ---- | --- | ---------- | ------- |
+| Management1 | oob_management | oob | default | 192.168.0.12/24 | - |
+
+#### IPv6
+
+| Management Interface | description | Type | VRF | IPv6 Address | IPv6 Gateway |
+| -------------------- | ----------- | ---- | --- | ------------ | ------------ |
+| Management1 | oob_management | oob | default | - | - |
+
+### Management Interfaces Device Configuration
+
+```eos
+!
+interface Management1
+   description oob_management
+   no shutdown
+   ip address 192.168.0.12/24
+```
+
 ## Management API HTTP
 
 ### Management API HTTP Summary
@@ -45,7 +72,7 @@
 
 | VRF Name | IPv4 ACL | IPv6 ACL |
 | -------- | -------- | -------- |
-| MGMT | - | - |
+| default | - | - |
 
 ### Management API HTTP Configuration
 
@@ -55,7 +82,7 @@ management api http-commands
    protocol https
    no shutdown
    !
-   vrf MGMT
+   vrf default
       no shutdown
 ```
 
@@ -190,14 +217,13 @@ service routing protocols model multi-agent
 | VRF | Routing Enabled |
 | --- | --------------- |
 | default | True |
-| MGMT | false |
+| default | false |
 
 ### IP Routing Device Configuration
 
 ```eos
 !
 ip routing
-no ip routing vrf MGMT
 ```
 ## IPv6 Routing
 
@@ -206,7 +232,7 @@ no ip routing vrf MGMT
 | VRF | Routing Enabled |
 | --- | --------------- |
 | default | False |
-| MGMT | false |
+| default | false |
 
 ## Router BGP
 
@@ -246,16 +272,16 @@ no ip routing vrf MGMT
 
 ### BGP Neighbors
 
-| Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain |
-| -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- |
-| 192.168.101.1 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
-| 192.168.101.2 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
-| 192.168.101.3 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
-| 192.168.101.4 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
-| 192.168.103.3 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
-| 192.168.103.7 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
-| 192.168.103.11 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
-| 192.168.103.15 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
+| Neighbor | Remote AS | VRF | Shutdown | Send-community | Maximum-routes | Allowas-in | BFD | RIB Pre-Policy Retain | Route-Reflector Client |
+| -------- | --------- | --- | -------- | -------------- | -------------- | ---------- | --- | --------------------- | ---------------------- |
+| 192.168.101.1 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - |
+| 192.168.101.2 | 65100 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - |
+| 192.168.101.3 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - |
+| 192.168.101.4 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - | - |
+| 192.168.103.3 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 192.168.103.7 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 192.168.103.11 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
+| 192.168.103.15 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - | - |
 
 ### Router BGP EVPN Address Family
 
@@ -384,13 +410,11 @@ route-map RM-CONN-2-BGP permit 10
 
 | VRF Name | IP Routing |
 | -------- | ---------- |
-| MGMT | disabled |
+| default | disabled |
 
 ## VRF Instances Device Configuration
 
 ```eos
-!
-vrf instance MGMT
 ```
 
 # Quality Of Service
