@@ -1,4 +1,0 @@
-queue_monitor_length:
-  enabled: true
-  # test the negative case
-  notifying: false

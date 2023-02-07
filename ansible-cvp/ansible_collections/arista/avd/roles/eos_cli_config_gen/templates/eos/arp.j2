@@ -1,5 +1,0 @@
-{# eos - arp #}
-{% if arp.aging.timeout_default is arista.avd.defined %}
-!
-arp aging timeout default {{ arp.aging.timeout_default }}
-{% endif %}
