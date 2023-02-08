@@ -1,8 +1,8 @@
-CVP_CONFIGLETS:
+cvp_configlets:
 
 
 
-CONTAINERS_DEFAULT:
+containers_default:
   DC1:
       parentContainerName: Tenant
   Spine:
@@ -14,7 +14,7 @@ CONTAINERS_DEFAULT:
   Hosts:
       parentContainerName: Tenant
  
-CVP_DEVICES_DEFAULT:
+cvp_devices_default:
   - fqdn: 'spine1'
     parentContainerName: 'Spine'
     configlets:

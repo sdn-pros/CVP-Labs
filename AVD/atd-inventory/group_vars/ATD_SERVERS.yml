@@ -9,7 +9,6 @@ servers:
     rack: mlag1
     adapters:
       - type: nic
-        server_ports: [Eth1, Eth2, Eth3, Eth4]
         switch_ports: [Ethernet6, Ethernet7, Ethernet6, Ethernet7]
         switches: [leaf1,leaf1, leaf2, leaf2]
         profile: VLAN_10
@@ -21,7 +20,6 @@ servers:
     rack: mlag2
     adapters:
       - type: nic
-        server_ports: [Eth1, Eth2, Eth3, Eth4]
         switch_ports: [Ethernet6, Ethernet7, Ethernet6, Ethernet7]
         switches: [leaf3, leaf3, leaf4, leaf4]
         profile: VLAN_10
