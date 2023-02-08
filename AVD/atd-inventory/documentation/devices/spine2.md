@@ -2,6 +2,7 @@
 # Table of Contents
 
 - [Management](#management)
+  - [DNS Domain](#dns-domain)
   - [Management API HTTP](#management-api-http)
 - [Authentication](#authentication)
 - [Monitoring](#monitoring)
@@ -32,6 +33,17 @@
 - [Quality Of Service](#quality-of-service)
 
 # Management
+
+## DNS Domain
+
+### DNS domain: atd.lab
+
+### DNS Domain Device Configuration
+
+```eos
+dns domain atd.lab
+!
+```
 
 ## Management API HTTP
 
@@ -109,9 +121,9 @@ vlan internal order ascending range 1006 1199
 | Interface | Description | Type | Channel Group | IP Address | VRF |  MTU | Shutdown | ACL In | ACL Out |
 | --------- | ----------- | -----| ------------- | ---------- | ----| ---- | -------- | ------ | ------- |
 | Ethernet2 | P2P_LINK_TO_LEAF1_Ethernet4 | routed | - | 192.168.103.2/31 | default | 1500 | False | - | - |
-| Ethernet3 | P2P_LINK_TO_LEAF2_Ethernet4 | routed | - | 192.168.103.6/31 | default | 1500 | False | - | - |
-| Ethernet4 | P2P_LINK_TO_LEAF3_Ethernet4 | routed | - | 192.168.103.10/31 | default | 1500 | False | - | - |
-| Ethernet5 | P2P_LINK_TO_LEAF4_Ethernet4 | routed | - | 192.168.103.14/31 | default | 1500 | False | - | - |
+| Ethernet3 | P2P_LINK_TO_LEAF2_Ethernet4 | routed | - | 192.168.103.8/31 | default | 1500 | False | - | - |
+| Ethernet4 | P2P_LINK_TO_LEAF3_Ethernet4 | routed | - | 192.168.103.14/31 | default | 1500 | False | - | - |
+| Ethernet5 | P2P_LINK_TO_LEAF4_Ethernet4 | routed | - | 192.168.103.20/31 | default | 1500 | False | - | - |
 
 ### Ethernet Interfaces Device Configuration
 
@@ -129,21 +141,21 @@ interface Ethernet3
    no shutdown
    mtu 1500
    no switchport
-   ip address 192.168.103.6/31
+   ip address 192.168.103.8/31
 !
 interface Ethernet4
    description P2P_LINK_TO_LEAF3_Ethernet4
    no shutdown
    mtu 1500
    no switchport
-   ip address 192.168.103.10/31
+   ip address 192.168.103.14/31
 !
 interface Ethernet5
    description P2P_LINK_TO_LEAF4_Ethernet4
    no shutdown
    mtu 1500
    no switchport
-   ip address 192.168.103.14/31
+   ip address 192.168.103.20/31
 ```
 
 ## Loopback Interfaces
@@ -252,9 +264,9 @@ ip routing
 | 192.168.101.3 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
 | 192.168.101.4 | 65102 | default | - | Inherited from peer group EVPN-OVERLAY-PEERS | Inherited from peer group EVPN-OVERLAY-PEERS | - | Inherited from peer group EVPN-OVERLAY-PEERS | - |
 | 192.168.103.3 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
-| 192.168.103.7 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
-| 192.168.103.11 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
+| 192.168.103.9 | 65100 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
 | 192.168.103.15 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
+| 192.168.103.21 | 65102 | default | - | Inherited from peer group IPv4-UNDERLAY-PEERS | Inherited from peer group IPv4-UNDERLAY-PEERS | - | - | - |
 
 ### Router BGP EVPN Address Family
 
@@ -298,15 +310,15 @@ router bgp 65001
    neighbor 192.168.103.3 peer group IPv4-UNDERLAY-PEERS
    neighbor 192.168.103.3 remote-as 65100
    neighbor 192.168.103.3 description leaf1_Ethernet4
-   neighbor 192.168.103.7 peer group IPv4-UNDERLAY-PEERS
-   neighbor 192.168.103.7 remote-as 65100
-   neighbor 192.168.103.7 description leaf2_Ethernet4
-   neighbor 192.168.103.11 peer group IPv4-UNDERLAY-PEERS
-   neighbor 192.168.103.11 remote-as 65102
-   neighbor 192.168.103.11 description leaf3_Ethernet4
+   neighbor 192.168.103.9 peer group IPv4-UNDERLAY-PEERS
+   neighbor 192.168.103.9 remote-as 65100
+   neighbor 192.168.103.9 description leaf2_Ethernet4
    neighbor 192.168.103.15 peer group IPv4-UNDERLAY-PEERS
    neighbor 192.168.103.15 remote-as 65102
-   neighbor 192.168.103.15 description leaf4_Ethernet4
+   neighbor 192.168.103.15 description leaf3_Ethernet4
+   neighbor 192.168.103.21 peer group IPv4-UNDERLAY-PEERS
+   neighbor 192.168.103.21 remote-as 65102
+   neighbor 192.168.103.21 description leaf4_Ethernet4
    redistribute connected route-map RM-CONN-2-BGP
    !
    address-family evpn

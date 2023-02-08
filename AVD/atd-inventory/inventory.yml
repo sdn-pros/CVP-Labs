@@ -21,6 +21,8 @@ all:
                 ansible_host: 192.168.0.11
               spine2:
                 ansible_host: 192.168.0.12
+              spine3:
+                ansible_host: 192.168.0.13
           ATD_LEAFS:
             vars:
               type: l3leaf

@@ -24,6 +24,10 @@ CVP_DEVICES:
     parentContainerName: ATD_SPINES
     configlets:
       - AVD_spine2
+  - fqdn: spine3
+    parentContainerName: ATD_SPINES
+    configlets:
+      - AVD_spine3
 CVP_CONTAINERS:
   ATD_FABRIC:
     parentContainerName: Tenant
