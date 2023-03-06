@@ -13,7 +13,10 @@ client = CvpClient()
 client.connect([cvp], cvp_user, cvp_pw)
 
 inventory = client.api.get_inventory()
+ooc_count = 0
 
 for item in inventory:
    if item['complianceIndication'] == "WARNING":
        print("The switch", item['hostname'], "is out of compliance")
+if ooc_count == 0:
+    print("All devices are in compliance")
